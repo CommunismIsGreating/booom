@@ -9,6 +9,8 @@ TagManager:
   - obstacles
   - NoMovableInt
   - NoMovableIntForever
+  - InteractCatch
+  - Catch
   layers:
   - Default
   - TransparentFX
