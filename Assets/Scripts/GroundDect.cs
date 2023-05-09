@@ -17,13 +17,17 @@ public class GroundDect : MonoBehaviour
     {
         
     }
-    public IEnumerator AgentOn()
+    //public IEnumerator AgentOn()
+    //{
+    //    Debug.Log("agent");
+    //    while (!canJump)
+    //    {
+    //        yield return null;
+    //    }
+    //    PlayerControllor.Instance.agent.enabled = true;
+    //}
+    public bool CanJump()
     {
-        Debug.Log("agent");
-        while (!canJump)
-        {
-            yield return null;
-        }
-        PlayerControllor.Instance.agent.enabled = true;
+        return canJump;
     }
 }

@@ -11,7 +11,7 @@ public class PressureInteract : MonoBehaviour
     //public event Action PressureBoard;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Interact") || other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Interact") || other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Catch"))
         {
             Debug.Log("触发压力板");
             eventnull?.Invoke();
@@ -19,7 +19,7 @@ public class PressureInteract : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Interact") || other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Interact") || other.gameObject.CompareTag("Player")|| other.gameObject.CompareTag("Catch"))
         {
             Debug.Log("释放压力板");
             eventnull?.Invoke();

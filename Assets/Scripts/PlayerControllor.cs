@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static Unity.VisualScripting.Member;
 
 public class PlayerControllor : MonoBehaviour
 {
-    public static PlayerControllor Instance;    
-   public NavMeshAgent agent;
+    public static PlayerControllor Instance;
+    PlayerInput input;
+   //public NavMeshAgent agent;
     [SerializeField] private float InterActRadius=5f;
     [SerializeField] private float CatchRadius = 3f;
-    [SerializeField] private float JumpRadius = 5f;
-    [SerializeField] private float JumpTime = 1f;
-    private float timer=0f;
-    public float JumpForce = 10f;
+    [SerializeField] private float WalkV = 10f;
+    Vector3 Dir=new Vector3(0,0,0);
     [SerializeField] float JumpV = 10f;
     public float ThrowDistance_Max = 20f;
     public CatchDect catchDect;
@@ -20,6 +20,11 @@ public class PlayerControllor : MonoBehaviour
 
     public Rigidbody body;
 
+    public bool isJump => body.velocity.y != 0;
+    public bool isQ = false;
+    public bool isE = false;
+    public bool isR = false;
+    Quaternion q = Quaternion.AngleAxis(45, Vector3.up);
     private void Awake()
     {
 
@@ -29,33 +34,38 @@ public class PlayerControllor : MonoBehaviour
         }
 
         Instance = this;
-        timer = 0;
-        agent = GetComponent<NavMeshAgent>();
+        //agent = GetComponent<NavMeshAgent>();
         body = GetComponent<Rigidbody>();
+        input = GetComponent<PlayerInput>();
     }
     private void Start()
     {
-        MouseManager.instance.MouseClick += MoveToTarget;
+        input.EnableGamePlay();
+        //MouseManager.instance.MouseClick += MoveToTarget;
         //MouseManager.instance.MouseClickWithInteract += ChangePosition;
     }
     private void Update()
     {
+        Dir = new Vector3(input.axes.x, body.velocity.y, input.axes.y);
+        Dir =q*Dir;
+
+        Move();
+        Q();
+        E();
+        R();
+        //body.AddForce(Dir*WalkV);
         
-       
-    }
-    public void MoveToTarget(Vector3 target)
-    {
-        Debug.Log("修改目标点");
-        agent.destination = target;
     }
 
-    //public void ChangePosition(Vector3 target)
-    //{
-    //    transform.position = target;    
-    //}
-    public void StopSelf()
+    void Move()
     {
-        agent.destination=transform.position;
+       //移动
+       setVelocityX(Dir.x*WalkV);
+       setVelocityZ(Dir.z*WalkV);
+        if (input.Jump)
+        {
+            setVelocityY(JumpV);
+        }
     }
 
     public bool IsInterAct(Transform one,Transform two)
@@ -76,20 +86,56 @@ public class PlayerControllor : MonoBehaviour
     public void Jump()
     {
         Debug.Log("jump");
-        timer = 0;
-        agent.enabled= false;   
-        body.velocity =new Vector3(MouseManager.instance.Dir.x*JumpForce,JumpV, MouseManager.instance.Dir.z*JumpForce);
-        StartCoroutine(AgentOn());
+        //agent.enabled= false;   
+        setVelocityY(JumpV);
+        //StartCoroutine(AgentOn());
     }
-    IEnumerator AgentOn()
+
+
+    void setVelocityX(float X)
     {
-        Debug.Log("1");
-        while (timer < JumpTime)
+        body.velocity = new Vector3(X,body.velocity.y,body.velocity.z);
+    }
+    void setVelocityY(float Y)
+    {
+        body.velocity = new Vector3(body.velocity.x, Y, body.velocity.z);
+    }
+    void setVelocityZ(float Z)
+    {
+        body.velocity = new Vector3(body.velocity.x, body.velocity.y, Z);
+    }
+    void Q()
+    {
+        if (input.onQ)
         {
-            timer += Time.deltaTime;
-            yield return null;
+            isQ = true;
         }
-        StartCoroutine( groundDect.AgentOn());
-        timer = 0f;
+        if(input.deQ) 
+        {
+            isQ = false;
+        }
+    }
+    void E()
+    {
+        if (input.onE)
+        {
+            isE = true;
+        }
+        if (input.deE)
+        {
+            isE = false;
+        }
+    }
+    void R()
+    {
+        if (input.onR)
+        {
+            Debug.Log("R");
+            isR = true;
+        }
+        if (input.deR)
+        {
+            isR = false;
+        }
     }
 }
