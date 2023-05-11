@@ -56,7 +56,10 @@ public class PlayerControllor : MonoBehaviour
         E();
         R();
         //body.AddForce(Dir*WalkV);
-        
+        if (isQ || isR || isE)
+        {
+            Time.timeScale = MouseManager.instance.QE_TimeSpeed;
+        }
     }
 
     void Move()

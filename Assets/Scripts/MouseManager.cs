@@ -20,6 +20,7 @@ public class MouseManager : MonoBehaviour
     [SerializeField] private Tick tick;
     [SerializeField] private CM camera1;
     [SerializeField] private bool IsM=false;
+    [Range(0f,2f)]public float QE_TimeSpeed = 0.5f;
     private bool canFire=false;
     private float timer;
     //public event Action<Transform, Transform> MouseClickWithInteractOnly;
@@ -73,6 +74,7 @@ public class MouseManager : MonoBehaviour
     }
     void MouseControl()
     {
+        Time.timeScale = 1f;
         //Debug.Log("on");
         if (Input.GetMouseButtonDown(0) && hit.collider != null)
         {
@@ -100,7 +102,6 @@ public class MouseManager : MonoBehaviour
         {
             if (temp == null) {
                 temp = hit.collider;
-                
                 return;
             }
             else if (temp != hit.collider)
@@ -108,7 +109,6 @@ public class MouseManager : MonoBehaviour
                 PosionChange(temp, hit.collider);
                 //PlayerControllor.Instance.StopSelf();
                 Debug.Log("物体位置变换");
-                
                 temp = null;
             }
             else

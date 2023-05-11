@@ -18,7 +18,7 @@ public class CM : MonoBehaviour
     }
     public void ChangePos()
     {
-        cm[++pos_index].MoveToTopOfPrioritySubqueue();
+        cm[(++pos_index)%4].MoveToTopOfPrioritySubqueue();
     }
     public void MView()
     {
