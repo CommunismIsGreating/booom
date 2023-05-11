@@ -24,7 +24,8 @@ public class PlayerControllor : MonoBehaviour
     public bool isQ = false;
     public bool isE = false;
     public bool isR = false;
-    Quaternion q = Quaternion.AngleAxis(45, Vector3.up);
+    public float angle=0;
+    Quaternion q;
     private void Awake()
     {
 
@@ -47,6 +48,7 @@ public class PlayerControllor : MonoBehaviour
     private void Update()
     {
         Dir = new Vector3(input.axes.x, body.velocity.y, input.axes.y);
+        q = Quaternion.AngleAxis(angle+90, Vector3.up);
         Dir =q*Dir;
 
         Move();
@@ -62,7 +64,7 @@ public class PlayerControllor : MonoBehaviour
        //ÒÆ¶¯
        setVelocityX(Dir.x*WalkV);
        setVelocityZ(Dir.z*WalkV);
-        if (input.Jump)
+        if (input.Jump&&groundDect.canJump)
         {
             setVelocityY(JumpV);
         }

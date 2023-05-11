@@ -17,6 +17,10 @@ public class MouseManager : MonoBehaviour
     public Transform playerPosition;
     [SerializeField]private CatchDect catchD;
     [SerializeField]private Catch catchT;
+    [SerializeField] private Tick tick;
+    [SerializeField] private CM camera1;
+    [SerializeField] private bool IsM=false;
+    private bool canFire=false;
     private float timer;
     //public event Action<Transform, Transform> MouseClickWithInteractOnly;
 
@@ -48,6 +52,7 @@ public class MouseManager : MonoBehaviour
         instance = this;
         MouseManager.instance.MouseClickWithInteract += ChangePosition;
         temp = null;
+       
     }
     private void Update()
     {
@@ -134,7 +139,41 @@ public class MouseManager : MonoBehaviour
             move(catchT.transform,hit.point);
             catchT=null;
         }
-        
+        //踢球
+        if (PlayerControllor.Instance.isR && hit.collider.gameObject.CompareTag("Interact")&&!canFire)
+        {
+            Debug.Log("吸取");
+            tick = hit.collider.gameObject.GetComponent<Tick>();
+            tick.On = true;
+            canFire = true;
+        }
+        if (!PlayerControllor.Instance.isR&&canFire&&Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("发射");
+            tick.On = false;
+            canFire=false;
+            tick.Fire(hit.point-playerPosition.position);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            if(camera1 != null)
+            {
+                Debug.Log("转向");
+                PlayerControllor.Instance.angle += 90;
+                camera1.ChangePos();
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.M)&&!IsM)
+        {
+            Debug.Log("M");
+            camera1.MView();
+            IsM = true;
+        }else if(Input.GetKeyDown(KeyCode.M) && IsM)
+        {
+            camera1.ReturnPlayer();
+            IsM = false;
+        }
     }
 
     void PosionChange(Collider one, Collider two)
